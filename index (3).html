@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#0a0a0a" />
+  <title>Gestor de Performance — Encontros Ao Vivo</title>
+  <meta name="description" content="Encontros ao vivo para gestores de tráfego que querem aprender a diagnosticar campanhas, otimizar e escalar com mais estratégia." />
+  <style>
+    :root{
+      --bg:#070808;
+      --bg2:#0d0f0f;
+      --card:#101313;
+      --muted:#9ca3af;
+      --text:#f5f7f7;
+      --line:#222727;
+      --green:#8CFF3D;
+      --green2:#b7ff82;
+      --danger:#ff6b6b;
+      --radius:22px;
+      --shadow:0 22px 70px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:
+        radial-gradient(circle at 20% 0%, rgba(140,255,61,.08), transparent 35%),
+        radial-gradient(circle at 90% 10%, rgba(140,255,61,.05), transparent 25%),
+        var(--bg);
+      color:var(--text);
+      line-height:1.5;
+    }
+    a{color:inherit}
+    .wrap{width:min(1120px,calc(100% - 32px));margin:0 auto}
+    .topbar{
+      position:sticky;top:0;z-index:30;
+      background:rgba(7,8,8,.72);backdrop-filter:blur(16px);
+      border-bottom:1px solid rgba(255,255,255,.05)
+    }
+    .topbar .inner{height:70px;display:flex;align-items:center;justify-content:space-between}
+    .brand{font-weight:900;letter-spacing:-.03em;font-size:18px}
+    .brand span{color:var(--green)}
+    .mini-btn{
+      text-decoration:none;background:var(--green);color:#071003;
+      font-weight:800;padding:11px 16px;border-radius:999px;font-size:14px
+    }
+    .hero{padding:86px 0 52px}
+    .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:46px;align-items:center}
+    .eyebrow{
+      display:inline-flex;gap:8px;align-items:center;
+      border:1px solid rgba(140,255,61,.25);background:rgba(140,255,61,.07);
+      color:var(--green2);padding:8px 12px;border-radius:999px;
+      font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.08em
+    }
+    .dot{width:7px;height:7px;background:var(--green);border-radius:50%;box-shadow:0 0 18px var(--green)}
+    h1{font-size:clamp(42px,7vw,78px);line-height:.98;letter-spacing:-.06em;margin:22px 0 22px;max-width:850px}
+    h1 em{font-style:normal;color:var(--green)}
+    .lead{font-size:clamp(18px,2vw,22px);color:#c8cece;max-width:680px;margin:0 0 28px}
+    .hero-list{display:grid;gap:12px;margin:0 0 30px;padding:0;list-style:none}
+    .hero-list li{display:flex;gap:10px;align-items:flex-start;color:#d7dddd}
+    .check{
+      min-width:22px;height:22px;border-radius:7px;background:rgba(140,255,61,.12);
+      border:1px solid rgba(140,255,61,.24);color:var(--green);display:grid;place-items:center;font-weight:900
+    }
+    .cta{
+      display:inline-flex;align-items:center;justify-content:center;gap:10px;
+      border:0;cursor:pointer;text-decoration:none;background:var(--green);color:#071003;
+      font-weight:900;font-size:17px;padding:16px 22px;border-radius:14px;
+      box-shadow:0 12px 30px rgba(140,255,61,.14);transition:.2s ease
+    }
+    .cta:hover{transform:translateY(-1px);filter:brightness(1.03)}
+    .micro{color:#7f8989;font-size:13px;margin-top:11px}
+    .visual{
+      border:1px solid rgba(255,255,255,.08);border-radius:28px;padding:18px;
+      background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.015));
+      box-shadow:var(--shadow);position:relative;overflow:hidden
+    }
+    .screen{
+      aspect-ratio:4/5;border-radius:20px;background:
+      linear-gradient(180deg,rgba(140,255,61,.06),transparent 22%),
+      #0b0d0d;border:1px solid #1c2222;padding:18px;display:flex;flex-direction:column;gap:15px
+    }
+    .screen-top{display:flex;justify-content:space-between;align-items:center}
+    .pill{width:34%;height:9px;background:#232929;border-radius:999px}
+    .live{font-size:11px;font-weight:900;color:#071003;background:var(--green);padding:6px 9px;border-radius:999px}
+    .metric-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .metric{background:#111515;border:1px solid #222828;border-radius:14px;padding:12px}
+    .metric small{display:block;color:#7f8989;font-size:10px}
+    .metric strong{font-size:18px;display:block;margin-top:5px}
+    .chart{flex:1;background:linear-gradient(180deg,#0f1313,#0a0d0d);border:1px solid #202626;border-radius:16px;padding:14px;position:relative;overflow:hidden}
+    .chart:before{
+      content:"";position:absolute;inset:12% 6% 16%;
+      background:
+        linear-gradient(to right, transparent 0 14%, rgba(255,255,255,.04) 14% 15%, transparent 15% 29%, rgba(255,255,255,.04) 29% 30%, transparent 30% 44%, rgba(255,255,255,.04) 44% 45%, transparent 45% 59%, rgba(255,255,255,.04) 59% 60%, transparent 60% 74%, rgba(255,255,255,.04) 74% 75%, transparent 75%),
+        linear-gradient(to bottom, transparent 0 24%, rgba(255,255,255,.04) 24% 25%, transparent 25% 49%, rgba(255,255,255,.04) 49% 50%, transparent 50% 74%, rgba(255,255,255,.04) 74% 75%, transparent 75%);
+    }
+    .linechart{
+      position:absolute;left:8%;right:8%;bottom:18%;height:46%;
+      border-left:3px solid var(--green);border-bottom:3px solid transparent;
+      transform:skewY(-10deg);clip-path:polygon(0 72%,18% 63%,34% 68%,52% 38%,70% 45%,84% 18%,100% 0,100% 8%,85% 28%,71% 54%,53% 47%,35% 78%,18% 73%,0 82%);
+      background:var(--green);opacity:.9
+    }
+    section{padding:70px 0}
+    .section-head{max-width:760px;margin-bottom:32px}
+    .section-head h2{font-size:clamp(32px,5vw,52px);line-height:1.02;letter-spacing:-.045em;margin:0 0 14px}
+    .section-head p{color:#aab2b2;font-size:18px;margin:0}
+    .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+    .card{
+      background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px
+    }
+    .card .num{font-size:12px;color:var(--green);font-weight:900;letter-spacing:.1em}
+    .card h3{font-size:21px;margin:10px 0 8px}
+    .card p{color:#9ea7a7;margin:0}
+    .contrast{
+      background:linear-gradient(180deg,rgba(140,255,61,.05),transparent);
+      border-top:1px solid rgba(140,255,61,.12);border-bottom:1px solid rgba(140,255,61,.12)
+    }
+    .big-note{
+      font-size:clamp(28px,5vw,56px);line-height:1.05;letter-spacing:-.045em;
+      max-width:920px;font-weight:850
+    }
+    .big-note span{color:var(--green)}
+    .form-wrap{display:grid;grid-template-columns:.8fr 1.2fr;gap:30px;align-items:start}
+    .form-copy{position:sticky;top:100px}
+    .form-copy h2{font-size:clamp(34px,5vw,54px);line-height:1.04;letter-spacing:-.045em;margin:0 0 14px}
+    .form-copy p{color:#aab2b2;font-size:18px}
+    form{
+      background:#0e1111;border:1px solid #202626;border-radius:26px;padding:24px;
+      box-shadow:var(--shadow)
+    }
+    .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .field{margin-bottom:14px}
+    label{display:block;font-size:13px;color:#c5cccc;font-weight:700;margin-bottom:7px}
+    input,select,textarea{
+      width:100%;border:1px solid #252c2c;background:#090b0b;color:#f5f7f7;
+      padding:14px 14px;border-radius:12px;outline:none;font:inherit
+    }
+    input:focus,select:focus,textarea:focus{border-color:rgba(140,255,61,.55);box-shadow:0 0 0 3px rgba(140,255,61,.07)}
+    textarea{min-height:110px;resize:vertical}
+    .submit{width:100%;margin-top:4px}
+    .privacy{font-size:11px;color:#6f7878;margin:10px 0 0;text-align:center}
+    .success{
+      display:none;margin-top:14px;padding:14px;border-radius:12px;
+      background:rgba(140,255,61,.08);border:1px solid rgba(140,255,61,.24);color:#caffaa;font-size:14px
+    }
+    footer{padding:36px 0 50px;color:#6f7878;font-size:13px;border-top:1px solid #181c1c}
+    @media (max-width:1050px){.cards{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:860px){
+      .hero{padding-top:58px}
+      .hero-grid,.form-wrap{grid-template-columns:1fr}
+      .visual{max-width:620px}
+      .cards{grid-template-columns:1fr}
+      .form-copy{position:static}
+      .grid2{grid-template-columns:1fr}
+      .topbar .inner{height:62px}
+      .mini-btn{padding:9px 13px}
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="wrap inner">
+      <div class="brand">SALA DE <span>GESTORES</span></div>
+      <a class="mini-btn" href="#aplicacao">Entrar na lista</a>
+    </div>
+  </div>
+
+  <main>
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <div class="eyebrow"><span class="dot"></span> Primeiras turmas em formação</div>
+          <h1>Subir campanha qualquer um aprende. <em>O difícil é saber o que fazer quando ela não performa.</em></h1>
+          <p class="lead">
+            Aprenda a analisar campanhas, identificar gargalos e tomar decisões com estratégia —
+            sabendo o que testar, o que otimizar, o que cortar e quando escalar.
+          </p>
+
+          <ul class="hero-list">
+            <li><span class="check">✓</span><span>Aprenda a diagnosticar o que está travando a performance.</span></li>
+            <li><span class="check">✓</span><span>Entenda o que testar, otimizar, cortar e quando escalar.</span></li>
+            <li><span class="check">✓</span><span>Do primeiro cliente a quem já gerencia milhares de reais em mídia.</span></li>
+          </ul>
+
+          <a class="cta" href="#aplicacao">QUERO EVOLUIR COMO GESTOR →</a>
+          <div class="micro">Entre na lista da próxima turma. Sem compromisso e sem pagamento agora.</div>
+        </div>
+
+        <div class="visual" aria-hidden="true">
+          <div class="screen">
+            <div class="screen-top">
+              <div class="pill"></div>
+              <div class="live">AO VIVO</div>
+            </div>
+            <div class="metric-row">
+              <div class="metric"><small>CTR</small><strong>2,84%</strong></div>
+              <div class="metric"><small>CPA</small><strong>R$ 18,40</strong></div>
+              <div class="metric"><small>ROAS</small><strong>4,2x</strong></div>
+            </div>
+            <div class="chart">
+              <div style="font-size:12px;color:#879090">Performance da campanha</div>
+              <div class="linechart"></div>
+            </div>
+            <div class="metric">
+              <small>O objetivo não é decorar métricas.</small>
+              <strong style="font-size:15px">É aprender a tomar decisões.</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Você sabe subir uma campanha. Mas sabe diagnosticar uma?</h2>
+          <p>Quando o resultado piora, o problema não é falta de botão para apertar. É não saber qual hipótese testar primeiro.</p>
+        </div>
+
+        <div class="cards">
+          <article class="card">
+            <div class="num">01 — ESTRATÉGIA</div>
+            <h3>Entenda o cenário inteiro</h3>
+            <p>Oferta, público, criativo, funil e campanha precisam trabalhar juntos. Aprenda a enxergar além do Gerenciador.</p>
+          </article>
+          <article class="card">
+            <div class="num">02 — ANÁLISE</div>
+            <h3>Encontre o verdadeiro gargalo</h3>
+            <p>Aprenda a interpretar os números dentro do contexto e descobrir onde a operação está perdendo performance.</p>
+          </article>
+          <article class="card">
+            <div class="num">03 — OTIMIZAÇÃO & ESCALA</div>
+            <h3>Saiba qual decisão tomar</h3>
+            <p>Quando esperar, testar, trocar criativo, cortar uma campanha, redistribuir orçamento ou buscar escala.</p>
+          </article>
+          <article class="card">
+            <div class="num">04 — CASOS REAIS</div>
+            <h3>Problemas reais. Decisões reais.</h3>
+            <p>Campanhas, dúvidas e situações do dia a dia levadas para a sala e discutidas ao vivo com outros gestores.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="contrast">
+      <div class="wrap">
+        <div class="big-note">
+          Deixe de ser apenas um operador de anúncios.<br>
+          Aprenda a <span>pensar como um gestor de performance.</span>
+        </div>
+      </div>
+    </section>
+
+
+    <section>
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Menos achismo. Mais decisão.</h2>
+          <p>O objetivo não é decorar métricas. É desenvolver um processo de raciocínio que você consiga aplicar toda vez que abrir uma campanha.</p>
+        </div>
+        <div class="cards">
+          <article class="card">
+            <div class="num">PERGUNTA 01</div>
+            <h3>Onde está o problema?</h3>
+            <p>Campanha, criativo, público, oferta, página ou funil? Aprenda a separar sintoma de causa.</p>
+          </article>
+          <article class="card">
+            <div class="num">PERGUNTA 02</div>
+            <h3>Por que isso está acontecendo?</h3>
+            <p>Construa hipóteses antes de fazer alterações aleatórias que destroem dados e aprendizado.</p>
+          </article>
+          <article class="card">
+            <div class="num">PERGUNTA 03</div>
+            <h3>O que eu testo agora?</h3>
+            <p>Priorize testes e ações com base no impacto esperado e nos sinais que os dados estão mostrando.</p>
+          </article>
+          <article class="card">
+            <div class="num">PERGUNTA 04</div>
+            <h3>Quando eu escalo?</h3>
+            <p>Entenda se existe consistência suficiente para aumentar investimento — e o que observar depois.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="aplicacao">
+      <div class="wrap form-wrap">
+        <div class="form-copy">
+          <div class="eyebrow"><span class="dot"></span> Lista de interessados</div>
+          <h2>Quero conhecer o seu momento como gestor.</h2>
+          <p>
+            Estou formando as primeiras turmas. Responda algumas perguntas rápidas sobre sua experiência, volume de mídia, principais dificuldades e disponibilidade. Suas respostas vão ajudar a definir os temas e o formato dos primeiros encontros.
+          </p>
+        </div>
+
+        <form id="leadForm">
+          <div class="grid2">
+            <div class="field">
+              <label for="nome">Nome</label>
+              <input id="nome" name="nome" type="text" placeholder="Seu nome" required>
+            </div>
+            <div class="field">
+              <label for="whatsapp">WhatsApp</label>
+              <input id="whatsapp" name="whatsapp" type="tel" placeholder="(00) 00000-0000" required>
+            </div>
+          </div>
+
+          <div class="grid2">
+            <div class="field">
+              <label for="email">E-mail</label>
+              <input id="email" name="email" type="email" placeholder="voce@email.com" required>
+            </div>
+            <div class="field">
+              <label for="instagram">Instagram</label>
+              <input id="instagram" name="instagram" type="text" placeholder="@seuinstagram">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="tempo">Há quanto tempo você trabalha com tráfego?</label>
+            <select id="tempo" name="tempo" required>
+              <option value="">Selecione</option>
+              <option>Ainda não trabalho com tráfego</option>
+              <option>Menos de 3 meses</option>
+              <option>3 a 6 meses</option>
+              <option>6 a 12 meses</option>
+              <option>Mais de 1 ano</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="clientes">Você já gerencia campanhas de clientes?</label>
+            <select id="clientes" name="clientes" required>
+              <option value="">Selecione</option>
+              <option>Ainda não</option>
+              <option>Sim, 1 a 2 clientes</option>
+              <option>Sim, 3 a 5 clientes</option>
+              <option>Sim, mais de 5 clientes</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="investimento">Quanto você gerencia aproximadamente por mês em mídia?</label>
+            <select id="investimento" name="investimento" required>
+              <option value="">Selecione</option>
+              <option>Ainda não gerencio investimento</option>
+              <option>Até R$ 3 mil</option>
+              <option>R$ 3 mil a R$ 10 mil</option>
+              <option>R$ 10 mil a R$ 30 mil</option>
+              <option>Mais de R$ 30 mil</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="dor">Qual é sua maior dificuldade hoje como gestor de tráfego?</label>
+            <textarea id="dor" name="dor" placeholder="Ex.: analisar métricas, conseguir clientes, estruturar campanhas, saber quando escalar..." required></textarea>
+          </div>
+
+          <div class="grid2">
+            <div class="field">
+              <label for="ticket">Quanto você estaria disposto a investir mensalmente para participar dos encontros ao vivo?</label>
+              <select id="ticket" name="ticket" required>
+                <option value="">Selecione</option>
+                <option>Até R$ 97/mês</option>
+                <option>De R$ 97 a R$ 197/mês</option>
+                <option>De R$ 197 a R$ 397/mês</option>
+                <option>De R$ 397 a R$ 597/mês</option>
+                <option>Acima de R$ 597/mês</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="horario">Melhor horário para as aulas</label>
+              <select id="horario" name="horario" required>
+                <option value="">Selecione</option>
+                <option>Manhã</option>
+                <option>Tarde</option>
+                <option>Noite</option>
+              </select>
+            </div>
+          </div>
+
+          <button class="cta submit" type="submit">QUERO ENTRAR PARA A PRÓXIMA TURMA →</button>
+          <div class="privacy">Entrar na lista não exige pagamento e não garante uma vaga. Ao enviar, você concorda em ser contatado sobre os encontros.</div>
+          <div id="success" class="success">Cadastro recebido. Obrigado pelo interesse! Em breve você poderá receber informações sobre a próxima turma.</div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      © 2026 — Sala de Gestores — Tráfego Pago Ao Vivo. Todos os direitos reservados.
+    </div>
+  </footer>
+
+  <script>
+    const form = document.getElementById('leadForm');
+    const success = document.getElementById('success');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const data = Object.fromEntries(new FormData(form).entries());
+
+      // INTEGRAÇÃO:
+      // Substitua a URL abaixo pelo seu webhook/endpoint quando quiser
+      // enviar os leads para CRM, Make, n8n, Supabase etc.
+      const WEBHOOK_URL = "";
+
+      if (WEBHOOK_URL) {
+        try {
+          const response = await fetch(WEBHOOK_URL, {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify(data)
+          });
+          if (!response.ok) throw new Error('Erro ao enviar');
+        } catch (err) {
+          alert('Não foi possível enviar agora. Tente novamente em instantes.');
+          return;
+        }
+      } else {
+        // Enquanto nenhum webhook estiver configurado, salva localmente no navegador.
+        const leads = JSON.parse(localStorage.getItem('trafegoAoVivoLeads') || '[]');
+        leads.push({...data, created_at:new Date().toISOString()});
+        localStorage.setItem('trafegoAoVivoLeads', JSON.stringify(leads));
+      }
+
+      success.style.display = 'block';
+      form.reset();
+      success.scrollIntoView({behavior:'smooth', block:'center'});
+    });
+  </script>
+</body>
+</html>

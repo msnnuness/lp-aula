@@ -158,6 +158,27 @@
       .mini-btn{padding:9px 13px}
     }
   </style>
+
+  <!-- Meta Pixel Code -->
+  <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1054041907363371');
+    fbq('track', 'PageView');
+  </script>
+  <noscript>
+    <img height="1" width="1" style="display:none"
+      src="https://www.facebook.com/tr?id=1054041907363371&ev=PageView&noscript=1"
+    />
+  </noscript>
+  <!-- End Meta Pixel Code -->
+
 </head>
 <body>
   <div class="topbar">
@@ -398,39 +419,52 @@
   <script>
     const form = document.getElementById('leadForm');
     const success = document.getElementById('success');
+    const submitButton = form.querySelector('button[type="submit"]');
+
+    const SUPABASE_URL = "https://lebclqzuretkhdzhqikn.supabase.co";
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_O5updN1WaDox-IansS2iRw_bzAcgJ0U";
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       const data = Object.fromEntries(new FormData(form).entries());
+      const originalText = submitButton.textContent;
 
-      // INTEGRAÇÃO:
-      // Substitua a URL abaixo pelo seu webhook/endpoint quando quiser
-      // enviar os leads para CRM, Make, n8n, Supabase etc.
-      const WEBHOOK_URL = "";
+      submitButton.disabled = true;
+      submitButton.textContent = "ENVIANDO...";
 
-      if (WEBHOOK_URL) {
-        try {
-          const response = await fetch(WEBHOOK_URL, {
-            method: 'POST',
-            headers: {'Content-Type':'application/json'},
-            body: JSON.stringify(data)
-          });
-          if (!response.ok) throw new Error('Erro ao enviar');
-        } catch (err) {
-          alert('Não foi possível enviar agora. Tente novamente em instantes.');
-          return;
+      try {
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/leads_gestores`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "apikey": SUPABASE_PUBLISHABLE_KEY,
+            "Authorization": `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+            "Prefer": "return=minimal"
+          },
+          body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error("Supabase:", errorText);
+          throw new Error("Erro ao cadastrar lead");
         }
-      } else {
-        // Enquanto nenhum webhook estiver configurado, salva localmente no navegador.
-        const leads = JSON.parse(localStorage.getItem('trafegoAoVivoLeads') || '[]');
-        leads.push({...data, created_at:new Date().toISOString()});
-        localStorage.setItem('trafegoAoVivoLeads', JSON.stringify(leads));
-      }
 
-      success.style.display = 'block';
-      form.reset();
-      success.scrollIntoView({behavior:'smooth', block:'center'});
+        if (typeof fbq === "function") {
+          fbq("track", "Lead");
+        }
+
+        form.reset();
+        success.style.display = "block";
+        success.scrollIntoView({behavior:"smooth", block:"center"});
+      } catch (error) {
+        console.error(error);
+        alert("Não foi possível enviar seu cadastro agora. Tente novamente em instantes.");
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = originalText;
+      }
     });
   </script>
 </body>
